@@ -1,0 +1,12 @@
+# Backend (Visual Studio / .NET)
+.vs/
+bin/
+obj/
+*.suo
+*.user
+
+# Frontend (Node.js / Vite)
+node_modules/
+dist/
+.vite/
+*.local
