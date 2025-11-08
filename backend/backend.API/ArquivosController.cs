@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.API
 {
     [Controller]
-    [Route("api/TrabalhoSF/[controller]")]
+    [Route("api/TrabalhoSF/[controller]/[Action]")]
     [Authorize]
     public class ArquivosController
     {
