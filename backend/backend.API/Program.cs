@@ -7,6 +7,8 @@ var pathBanco = Path.Combine(AppContext.BaseDirectory, "trabalhoFinal.db");
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite($"Data Source={pathBanco}"));
 
+//Adicionar repos
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
