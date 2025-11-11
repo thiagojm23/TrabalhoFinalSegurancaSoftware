@@ -1,6 +1,4 @@
-﻿using backend.API.Data;
-
-namespace backend.API.Dominio.Entidade
+﻿namespace backend.API
 {
     public class Usuario
     {

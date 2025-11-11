@@ -1,13 +1,10 @@
-﻿using backend.API.Dominio.Contrato;
-using backend.API.Dominio.Entidade;
-using backend.API.Services.Interface;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
-namespace backend.API.Controllers
+namespace backend.API
 {
     [ApiController]
     [Route("api/TrabalhoSF/[controller]/[Action]")]

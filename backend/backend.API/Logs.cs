@@ -1,6 +1,4 @@
-﻿using backend.API.Dominio.Entidade;
-
-namespace backend.API.Data
+﻿namespace backend.API
 {
     public class Logs
     {
