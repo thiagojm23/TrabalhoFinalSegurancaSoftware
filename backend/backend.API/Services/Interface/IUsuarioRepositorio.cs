@@ -1,4 +1,6 @@
-﻿namespace backend.API
+﻿using backend.API.Dominio.Entidade;
+
+namespace backend.API.Services.Interface
 {
     public interface IUsuarioRepositorio
     {

@@ -1,8 +1,11 @@
-﻿using System.Security.Cryptography;
+﻿using backend.API.Data;
+using backend.API.Dominio.Entidade;
+using backend.API.Services.Interface;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
-namespace backend.API
+namespace backend.API.Services.Repository
 {
     public class UsuarioRepositorio(AppDbContext appDbContext) : IUsuarioRepositorio
     {
@@ -28,7 +31,7 @@ namespace backend.API
 
         public string GerarHashSenha(string senha)
         {
-            byte[] salt = new byte[128/8];
+            byte[] salt = new byte[128 / 8];
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(salt);
@@ -42,7 +45,7 @@ namespace backend.API
                     numBytesRequested: 256 / 8
                 )
             );
-            return $"{Convert.ToBase64String(salt)}.{hash}";    
+            return $"{Convert.ToBase64String(salt)}.{hash}";
 
         }
         public bool VerificarSenha(string senha, string senhaHash)

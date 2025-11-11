@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using backend.API.Dominio.Entidade;
+using Microsoft.EntityFrameworkCore;
 
-namespace backend.API
+namespace backend.API.Data
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {

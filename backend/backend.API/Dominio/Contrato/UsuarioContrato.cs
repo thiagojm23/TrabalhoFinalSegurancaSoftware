@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace backend.API
+namespace backend.API.Dominio.Contrato
 {
     public class UsuarioContrato
     {

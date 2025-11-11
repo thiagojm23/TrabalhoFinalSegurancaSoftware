@@ -1,8 +1,9 @@
 ﻿using System.Security.Claims;
+using backend.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace backend.API
+namespace backend.API.Controllers
 {
     [ApiController]
     [Route("api/TrabalhoSF/[controller]/[Action]")]

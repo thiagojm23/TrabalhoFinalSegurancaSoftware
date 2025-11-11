@@ -1,5 +1,8 @@
 using System.Text;
-using backend.API;
+using backend.API.Data;
+using backend.API.Services;
+using backend.API.Services.Interface;
+using backend.API.Services.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

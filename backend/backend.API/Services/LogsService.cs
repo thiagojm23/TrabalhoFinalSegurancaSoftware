@@ -1,4 +1,5 @@
 using backend.API;
+using backend.API.Data;
 
 public class LogsService
 {
