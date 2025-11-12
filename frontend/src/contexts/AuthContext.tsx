@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import type { User } from "../types";
-import { STORAGE_KEYS } from "../constants";
+import axios, { isAxiosError } from "../lib/axios";
 
 interface AuthContextType {
   user: User | null;
@@ -13,28 +13,35 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  const [user, setUser] = useState<User | null>(null);
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    if (email && password) {
+    try {
+      const response = await axios.post("/api/TrabalhoSF/Usuario/Logar", {
+        email,
+        senha: password,
+      });
+
+      console.log("Login realizado:", response.data);
+
+      // Backend já salva cookie httpOnly, apenas setamos o user
       const userData: User = {
-        id: "1",
-        name: email.split("@")[0],
         email: email,
       };
       setUser(userData);
-      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData));
       return true;
+    } catch (error) {
+      console.error("Erro ao fazer login:", error);
+      if (isAxiosError(error) && error.response?.status === 401) {
+        return false;
+      }
+      throw error;
     }
-    return false;
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem(STORAGE_KEYS.USER);
+    // Opcionalmente, chamar endpoint de logout do backend
   };
 
   const value = {
@@ -50,7 +57,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error("Context indefinido");
   }
   return context;
 }

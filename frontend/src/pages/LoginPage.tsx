@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import axios, { isAxiosError } from "../lib/axios";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [senha, setsenha] = useState("");
   const [ehTelaLogin, setEhTelaLogin] = useState(true);
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
@@ -18,31 +17,65 @@ function LoginPage() {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+  const handleSubmit = async () => {
+    if (!email || !senha) {
+      window.alert("Por favor, preencha todos os campos");
+      return;
+    }
 
+    setIsLoading(true);
     try {
       const success = await login(email, senha);
       if (success) {
         navigate("/home", { replace: true });
       } else {
-        setError("Email ou senha inválidos");
+        window.alert("Email ou senha inválidos");
       }
     } catch (err) {
-      setError("Erro ao fazer login. Tente novamente.");
+      window.alert("Erro ao fazer login. Tente novamente.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  function logar() {
-    navigate("/home", { replace: true });
-  }
+  async function cadastrar() {
+    if (!email || !senha) {
+      window.alert("Por favor, preencha todos os campos");
+      return;
+    }
 
-  function cadastrar() {
-    navigate("/home", { replace: true });
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        "/api/TrabalhoSF/Usuario/CadastrarUsuario",
+        {
+          email,
+          senha,
+        }
+      );
+
+      console.log("Cadastro realizado:", response.data);
+      setEhTelaLogin(true);
+      setsenha("");
+      window.alert(
+        "Cadastro realizado com sucesso! Faça login para continuar."
+      );
+    } catch (error) {
+      console.error("Erro ao cadastrar:", error);
+      if (isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          window.alert("Email já cadastrado ou dados inválidos");
+        } else if (error.response?.status === 500) {
+          window.alert("Erro no servidor. Tente novamente mais tarde.");
+        } else {
+          window.alert("Erro ao cadastrar. Tente novamente.");
+        }
+      } else {
+        window.alert("Erro ao cadastrar. Tente novamente.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function irParaCadastro() {
@@ -61,23 +94,35 @@ function LoginPage() {
           Insira suas credenciais para acessar sua conta.
         </div>
         <div className="field label border no-margin">
-          <input type="text" />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isLoading}
+          />
           <label>Email</label>
         </div>
         <div className="space"></div>
         <div className="field label border no-margin">
-          <input type="text" />
+          <input
+            type="password"
+            value={senha}
+            onChange={(e) => setsenha(e.target.value)}
+            disabled={isLoading}
+          />
           <label>Senha</label>
         </div>
         <button
-          onClick={logar}
+          onClick={handleSubmit}
           className="w50 small-round vertical-margin tiny-padding large-text"
+          disabled={isLoading}
         >
-          ENTRAR
+          {isLoading ? "ENTRANDO..." : "ENTRAR"}
         </button>
         <button
           onClick={irParaCadastro}
           className="w50 border small-round tiny-padding large-text"
+          disabled={isLoading}
         >
           CADASTRAR-SE
         </button>
@@ -92,29 +137,41 @@ function LoginPage() {
         </h5>
         <div className="space"></div>
         <div className="field label border no-margin">
-          <input type="text" />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={isLoading}
+          />
           <label>Email</label>
         </div>
         <div className="space"></div>
         <div className="field label border no-margin">
-          <input type="text" />
+          <input
+            type="password"
+            value={senha}
+            onChange={(e) => setsenha(e.target.value)}
+            disabled={isLoading}
+          />
           <label>Senha</label>
         </div>
         <div className="space"></div>
         <div className="field label border no-margin">
-          <input type="text" />
+          <input type="password" disabled={isLoading} />
           <label>Confirmar senha</label>
         </div>
         <div className="space"></div>
         <button
           onClick={cadastrar}
           className="w50 small-round vertical-margin tiny-padding large-text"
+          disabled={isLoading}
         >
-          CADASTRAR
+          {isLoading ? "CADASTRANDO..." : "CADASTRAR"}
         </button>
         <button
           onClick={irParaLogin}
           className="w50 border small-round tiny-padding large-text"
+          disabled={isLoading}
         >
           RETORNAR PARA LOGIN
         </button>

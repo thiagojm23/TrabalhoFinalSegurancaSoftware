@@ -53,7 +53,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "https://localhost:3000")
+        policy.WithOrigins("http://localhost:5173", "https://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials(); // Necessário para cookies CSRF
@@ -81,6 +81,30 @@ builder.Services.AddAuthentication(op =>
         ValidAudience = builder.Configuration["Jwt:Audience"],
         ValidateLifetime = true, // Verifique se o token não expirou
         ClockSkew = TimeSpan.Zero // Remove a tolerância padrão de 5 minutos na expiração
+    };
+
+    // IMPORTANTE: Configurar para ler o token do cookie HTTPOnly
+    op.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            // Primeiro tenta ler do header Authorization (padrão)
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+            // Se não encontrou no header, tenta ler do cookie
+            if (string.IsNullOrEmpty(token))
+            {
+                token = context.Request.Cookies["auth_token"];
+            }
+
+            // Define o token para o contexto de autenticação
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+            }
+
+            return Task.CompletedTask;
+        }
     };
 });
 
