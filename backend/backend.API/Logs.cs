@@ -8,8 +8,5 @@
         public string? DescricaoAcao { get; set; }
         public required string TituloAcao { get; set; }
         public Guid UsuarioId { get; set; }
-
-        public required Usuario Usuario { get; set; }
-
     }
 }

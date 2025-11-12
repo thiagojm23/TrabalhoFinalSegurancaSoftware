@@ -1,3 +1,4 @@
+using System.Net;
 using backend.API;
 
 public class LogsService
@@ -19,7 +20,6 @@ public class LogsService
             TituloAcao = NeutralizaEntradaUsuario(tituloAcao),
             DescricaoAcao = NeutralizaEntradaUsuario(descricaoAcao),
             DataAcao = DateTime.UtcNow,
-            Usuario = default
         };
 
         _context.Logs.Add(log);
@@ -28,6 +28,20 @@ public class LogsService
 
     public string NeutralizaEntradaUsuario(string input)
     {
-        return input.Replace("\n", "").Replace("\r", "").Replace("\t", "");
+        if (string.IsNullOrWhiteSpace(input))
+            return string.Empty;
+
+        // Remove caracteres de controle perigosos (quebras de linha e tabulações)
+        input = input.Replace("\n", " ").Replace("\r", " ").Replace("\t", " ");
+
+        // HTML Encode para prevenir XSS
+        // Converte caracteres especiais HTML como <, >, &, ", ' para entidades HTML seguras
+        input = WebUtility.HtmlEncode(input);
+
+        // Limita o tamanho para evitar ataques de negação de serviço e respeitar limites do banco
+        if (input.Length > 500)
+            input = input[..500];
+
+        return input.Trim();
     }
 }

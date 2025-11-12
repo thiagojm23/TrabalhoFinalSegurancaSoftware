@@ -23,11 +23,6 @@ namespace backend.API
                 entidade.Property(e => e.TelaAcao).HasMaxLength(50);
                 entidade.Property(e => e.DescricaoAcao).HasMaxLength(500);
                 entidade.Property(e => e.TituloAcao).HasMaxLength(50);
-
-                entidade.HasOne(e => e.Usuario)
-                    .WithMany(u => u.Logs)
-                    .HasForeignKey(e => e.UsuarioId)
-                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }
