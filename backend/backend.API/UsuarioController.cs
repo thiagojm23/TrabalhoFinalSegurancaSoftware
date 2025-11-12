@@ -124,7 +124,7 @@ namespace backend.API
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Lax,
                 Path = "/",
                 Expires = DateTime.UtcNow.AddHours(2)
             };

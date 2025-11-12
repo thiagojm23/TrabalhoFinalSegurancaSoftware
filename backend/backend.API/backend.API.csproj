@@ -19,4 +19,24 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
   </ItemGroup>
 
+	<Target Name="BuildFrontend" BeforeTargets="Build">
+		<Message Text="Iniciando build do Frontend (npm run build)..." Importance="high" />
+
+		<Exec Command="npm install" WorkingDirectory="../../frontend" />
+		<Exec Command="npm run build" WorkingDirectory="../../frontend" />
+
+		<PropertyGroup>
+			<FrontendDistPath>../../frontend/dist</FrontendDistPath>
+			<WwwRootPath>wwwroot</WwwRootPath>
+		</PropertyGroup>
+
+		<RemoveDir Directories="$(WwwRootPath)" />
+		<MakeDir Directories="$(WwwRootPath)" />
+
+		<ItemGroup>
+			<FrontendBuildOutput Include="$(FrontendDistPath)/**" />
+		</ItemGroup>
+		<Copy SourceFiles="@(FrontendBuildOutput)" DestinationFolder="$(WwwRootPath)/%(RecursiveDir)" />
+	</Target>
+
 </Project>

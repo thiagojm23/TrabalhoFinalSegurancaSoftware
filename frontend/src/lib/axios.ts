@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Configurar baseURL para o backend
 const axiosInstance = axios.create({
-  baseURL: "https://localhost:7135",
+  baseURL: "/",
   withCredentials: true, // Importante para enviar cookies httpOnly
 });
 

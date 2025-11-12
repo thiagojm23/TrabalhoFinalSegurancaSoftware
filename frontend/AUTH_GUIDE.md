@@ -77,9 +77,3 @@ async function buscarDados() {
 
 - `POST /api/TrabalhoSF/Usuario/Logar` - Login
 - `POST /api/TrabalhoSF/Usuario/CadastrarUsuario` - Cadastro
-
-## ⚠️ Importante:
-
-- Sempre use `import axios from "../lib/axios"` (não `from "axios"`)
-- O cookie httpOnly é gerenciado automaticamente pelo navegador
-- Não precisa enviar tokens manualmente nas requisições
