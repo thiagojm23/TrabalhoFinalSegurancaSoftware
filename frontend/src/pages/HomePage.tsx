@@ -1,11 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
 import axios, { isAxiosError } from "../lib/axios";
 
 function HomePage() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [nomeArquivo, setNomeArquivo] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -13,11 +9,6 @@ function HomePage() {
   const [modoOperacao, setModoOperacao] = useState<"upload" | "download">(
     "upload"
   );
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login", { replace: true });
-  };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -36,7 +27,7 @@ function HomePage() {
     setIsUploading(true);
     try {
       const formData = new FormData();
-      formData.append("file", selectedFile);
+      formData.append("arquivo", selectedFile);
 
       const response = await axios.post(
         "/api/TrabalhoSF/Arquivos/UploadArquivo",
