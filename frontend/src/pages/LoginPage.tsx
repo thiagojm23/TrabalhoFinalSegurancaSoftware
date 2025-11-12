@@ -32,7 +32,11 @@ function LoginPage() {
         window.alert("Email ou senha inválidos");
       }
     } catch (err) {
-      window.alert("Erro ao fazer login. Tente novamente.");
+      const mensagemErro =
+        err instanceof Error
+          ? err.message
+          : "Erro ao fazer login. Tente novamente.";
+      window.alert(mensagemErro);
     } finally {
       setIsLoading(false);
     }
@@ -63,12 +67,26 @@ function LoginPage() {
     } catch (error) {
       console.error("Erro ao cadastrar:", error);
       if (isAxiosError(error)) {
+        const mensagemErro =
+          error.response?.data?.mensagem || error.response?.data;
         if (error.response?.status === 400) {
-          window.alert("Email já cadastrado ou dados inválidos");
+          window.alert(
+            typeof mensagemErro === "string"
+              ? mensagemErro
+              : "Email já cadastrado ou dados inválidos"
+          );
         } else if (error.response?.status === 500) {
-          window.alert("Erro no servidor. Tente novamente mais tarde.");
+          window.alert(
+            typeof mensagemErro === "string"
+              ? mensagemErro
+              : "Erro no servidor. Tente novamente mais tarde."
+          );
         } else {
-          window.alert("Erro ao cadastrar. Tente novamente.");
+          window.alert(
+            typeof mensagemErro === "string"
+              ? mensagemErro
+              : "Erro ao cadastrar. Tente novamente."
+          );
         }
       } else {
         window.alert("Erro ao cadastrar. Tente novamente.");

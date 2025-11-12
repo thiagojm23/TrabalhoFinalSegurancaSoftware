@@ -20,7 +20,7 @@ namespace backend.API
             var usuarioExistente = await _usuarioRepositorio.BuscarPorEmailAsync(contrato.Email);
 
             if (usuarioExistente != null)
-                return BadRequest("Usuário já cadastrado");
+                return BadRequest(new { mensagem = "Usuário já cadastrado" });
 
             var usuario = new Usuario
             {
@@ -48,7 +48,7 @@ namespace backend.API
 
             if (usuario == null)
             {
-                return Unauthorized("Credenciais inválidas"); // ideia é deixar implícito que o usuario não existe
+                return StatusCode(401, new { mensagem = "Credenciais inválidas" });
             }
 
             if (usuario.DataBloqueio > DateTime.UtcNow)
@@ -61,7 +61,7 @@ namespace backend.API
                     tituloAcao: "Tentativa Bloqueada",
                     descricaoAcao: $"Tentativa de login com usuário bloqueado. Tempo restante: {tempoRestante} minutos");
 
-                return Unauthorized($"Usuário bloqueado. Tente novamente em {tempoRestante} minutos.");
+                return StatusCode(400, new { mensagem = $"Usuário bloqueado. Tente novamente em {tempoRestante} minutos." });
             }
 
             if (!_usuarioRepositorio.VerificarSenha(contrato.Senha, usuario.SenhaHash))
@@ -71,6 +71,7 @@ namespace backend.API
                 if (usuario.QuantidadeFalhasLogin >= 5) // Bloquear após 5 tentativas falhas
                 {
                     usuario.DataBloqueio = DateTime.UtcNow.AddMinutes(30);
+                    usuario.QuantidadeFalhasLogin = 0;
                     await _usuarioRepositorio.AtualizarUsuarioAsync(usuario);
 
                     _logsService.RegistrarLog(
@@ -79,7 +80,7 @@ namespace backend.API
                         tituloAcao: "Conta Bloqueada",
                         descricaoAcao: $"Usuário {usuario.Email} bloqueado por 30 minutos devido a múltiplas tentativas de login falhas");
 
-                    return Unauthorized("Conta bloqueada por 30 minutos devido a múltiplas tentativas falhas.");
+                    return StatusCode(400, new { mensagem = "Conta bloqueada por 30 minutos devido a múltiplas tentativas falhas." });
                 }
 
                 await _usuarioRepositorio.AtualizarUsuarioAsync(usuario);
@@ -90,7 +91,7 @@ namespace backend.API
                     tituloAcao: "Login Falhou",
                     descricaoAcao: $"Tentativa de login falhou para {usuario.Email}. Tentativas: {usuario.QuantidadeFalhasLogin}/5");
 
-                return Unauthorized($"Credenciais inválidas. Tentativas restantes: {5 - usuario.QuantidadeFalhasLogin}");
+                return StatusCode(401, new { mensagem = $"Credenciais inválidas. Tentativas restantes: {5 - usuario.QuantidadeFalhasLogin}" });
             }
 
             usuario.QuantidadeFalhasLogin = 0;

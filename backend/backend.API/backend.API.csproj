@@ -38,5 +38,4 @@
 		</ItemGroup>
 		<Copy SourceFiles="@(FrontendBuildOutput)" DestinationFolder="$(WwwRootPath)/%(RecursiveDir)" />
 	</Target>
-
 </Project>

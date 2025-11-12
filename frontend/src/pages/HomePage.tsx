@@ -51,11 +51,17 @@ function HomePage() {
     } catch (error) {
       console.error("Erro ao fazer upload:", error);
       if (isAxiosError(error)) {
+        const mensagemErro =
+          error.response?.data?.mensagem || error.response?.data;
         if (error.response?.status === 401) {
           // O interceptor já vai redirecionar
           window.alert("Sessão expirada. Redirecionando para login...");
         } else {
-          window.alert("Erro ao enviar arquivo. Tente novamente.");
+          window.alert(
+            typeof mensagemErro === "string"
+              ? mensagemErro
+              : "Erro ao enviar arquivo. Tente novamente."
+          );
         }
       } else {
         window.alert("Erro ao enviar arquivo. Tente novamente.");
@@ -106,15 +112,25 @@ function HomePage() {
     } catch (error) {
       console.error("Erro ao baixar arquivo:", error);
       if (isAxiosError(error)) {
+        const mensagemErro =
+          error.response?.data?.mensagem || error.response?.data;
         if (error.response?.status === 401) {
           // O interceptor já vai redirecionar
           window.alert("Sessão expirada. Redirecionando para login...");
         } else if (error.response?.status === 404) {
-          window.alert("Arquivo não encontrado no servidor.");
+          window.alert(
+            typeof mensagemErro === "string"
+              ? mensagemErro
+              : "Arquivo não encontrado no servidor."
+          );
         } else if (error.code === "ERR_NETWORK") {
           window.alert("Erro de conexão: Backend não está rodando.");
         } else {
-          window.alert("Erro ao baixar arquivo. Tente novamente.");
+          window.alert(
+            typeof mensagemErro === "string"
+              ? mensagemErro
+              : "Erro ao baixar arquivo. Tente novamente."
+          );
         }
       } else {
         window.alert("Erro ao baixar arquivo. Tente novamente.");

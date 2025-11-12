@@ -32,8 +32,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return true;
     } catch (error) {
       console.error("Erro ao fazer login:", error);
-      if (isAxiosError(error) && error.response?.status === 401) {
-        return false;
+      if (isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          return false;
+        }
+        // Para outros erros, lançar com a mensagem do backend se disponível
+        const mensagemErro =
+          error.response?.data?.mensagem || error.response?.data;
+        if (mensagemErro && typeof mensagemErro === "string") {
+          throw new Error(mensagemErro);
+        }
       }
       throw error;
     }
